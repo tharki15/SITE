@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>BattleCoins Top-Up — DEMO</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent:#ffb800;
+    --muted:#98a0b3;
+    --glass: rgba(255,255,255,0.04);
+    --success:#28c76f;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background: radial-gradient(1000px 600px at 10% 10%, rgba(40,42,60,0.6), transparent),
+                linear-gradient(180deg,#071021 0%, #07142a 100%), var(--bg);
+    color:#e6eef8;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  .wrap{
+    max-width:1100px;
+    margin:32px auto;
+    padding:28px;
+    display:grid;
+    grid-template-columns: 360px 1fr;
+    gap:28px;
+  }
+
+  /* left column - account + deposits */
+  .panel{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.04);
+    border-radius:12px;
+    padding:18px;
+    box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .logo {
+    width:54px;height:54px;border-radius:10px;
+    background: linear-gradient(135deg,#ffb800,#ff6b6b);
+    display:grid;place-items:center;font-weight:700;color:#07121f;font-size:20px;
+    box-shadow: 0 6px 18px rgba(255,184,0,0.08), inset 0 -6px 18px rgba(0,0,0,0.18);
+  }
+  h1{margin:0;font-size:18px}
+  .muted{color:var(--muted);font-size:13px;margin-top:4px}
+
+  .demo-pill{
+    display:inline-block;padding:6px 10px;border-radius:999px;
+    background:linear-gradient(90deg, rgba(255,184,0,0.12), rgba(255,255,255,0.02));
+    color:var(--accent);font-weight:600;font-size:12px;border:1px dashed rgba(255,184,0,0.14);
+    margin-top:12px;
+  }
+
+  .login-area{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .login-btn{
+    display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;
+    background:var(--glass);border:1px solid rgba(255,255,255,0.03);
+    cursor:pointer;transition:transform .12s ease, box-shadow .12s;
+    color: #eaf2ff;font-weight:600;font-size:14px;
+  }
+  .login-btn:active{transform:translateY(1px)}
+  .login-btn .icon{
+    width:28px;height:28px;border-radius:6px;display:grid;place-items:center;font-weight:700;
+    background:linear-gradient(135deg,#ffffff10,#ffffff05);
+    color:var(--accent);
+  }
+  .small{font-size:12px;color:var(--muted)}
+
+  /* right column - shop */
+  .shop-header{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;
+  }
+  .search{
+    display:flex;gap:8px;align-items:center;background:var(--glass);padding:8px;border-radius:10px;
+    border:1px solid rgba(255,255,255,0.02);min-width:280px;
+  }
+  .search input{border:0;background:transparent;color:inherit;outline:0;font-size:14px}
+  .balance{
+    background:linear-gradient(90deg,#0f1b30,#0b1424);
+    border-radius:12px;padding:12px 16px;border:1px solid rgba(255,255,255,0.03);
+    display:flex;align-items:center;gap:12px;
+  }
+  .coin{
+    width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+    background: linear-gradient(135deg,#ffd36b,#ffb800);color:#072028;font-weight:800;
+    box-shadow: 0 6px 18px rgba(255,184,0,0.08);
+  }
+  .grid{
+    display:grid;grid-template-columns: repeat(auto-fill,minmax(180px,1fr));gap:12px;
+  }
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);
+  }
+  .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .card .amount{font-weight:800;font-size:20px}
+  .card .uc{color:var(--muted);font-size:12px}
+  .price{font-weight:800;color:var(--accent);font-size:18px}
+  .buy{
+    margin-top:10px;padding:8px 10px;border-radius:8px;background:linear-gradient(90deg,#ffb800,#ff8b4c);
+    color:#07121f;font-weight:700;border:0;cursor:pointer;width:100%;
+  }
+
+  /* footer / notes */
+  .note{margin-top:14px;color:var(--muted);font-size:13px}
+
+  /* modal */
+  .modal-back{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55));
+    z-index:40;
+  }
+  .modal{
+    width:420px;max-width:94%;background:#071426;border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 10px 50px rgba(0,0,0,0.7);
+  }
+  .modal h2{margin:0 0 8px 0}
+  .modal p{margin:0;color:var(--muted);font-size:14px}
+  .modal .actions{margin-top:16px;display:flex;gap:8px;justify-content:flex-end}
+  .btn-close{padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted);cursor:pointer}
+  .btn-ok{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:#07121f;font-weight:700;cursor:pointer}
+
+  /* demo badge */
+  .top-banner{
+    text-align:center;padding:10px 12px;margin-bottom:18px;border-radius:10px;background:linear-gradient(90deg, rgba(255,184,0,0.06), transparent);
+    border:1px dashed rgba(255,184,0,0.06);color:var(--muted);
+  }
+
+  footer{max-width:1100px;margin:18px auto;color:var(--muted);font-size:13px;padding:0 28px}
+
+  /* responsive */
+  @media (max-width:920px){
+    .wrap{grid-template-columns:1fr; padding:16px}
+    .brand .logo{width:46px;height:46px}
+  }
+</style>
+</head>
+<body>
+  <div class="top-banner">DEMO SITE — This is a fictional UI mock. <strong>Not for real purchases.</strong></div>
+
+  <div class="wrap">
+    <div class="panel">
+      <div class="brand">
+        <div class="logo">BC</div>
+        <div>
+          <h1>BattleCoins Top-Up (Demo)</h1>
+          <div class="muted">A safe prototype for learning & UI testing — not affiliated with any game publisher.</div>
+        </div>
+      </div>
+
+      <div class="demo-pill">DEMO • NON-COMMERCIAL • TESTING ONLY</div>
+
+      <div style="margin-top:18px">
+        <div style="font-weight:700">Account</div>
+        <div class="muted" style="margin-top:6px">Sign in to manage your demo purchases and view the mock purchase history.</div>
+
+        <div class="login-area">
+          <div class="login-btn" onclick="openModal('demo-login')">
+            <div class="icon">D</div>
+            <div>
+              Demo Login (sample)
+              <div class="small">This is a demo sign-in — no real authentication</div>
+            </div>
+          </div>
+
+          <div class="login-btn" onclick="openModal('demo-login')">
+            <div class="icon" style="background:linear-gradient(135deg,#8ad4ff,#4681ff);color:#072028">U</div>
+            <div>
+              Guest Connect
+              <div class="small">Quick guest access — not connected to any external provider</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px">
+        <div style="font-weight:700">Quick Info</div>
+        <div class="muted" style="margin-top:6px">Lowest demo price shown below; purchases are simulated and will not process payments.</div>
+
+        <div class="note">• This page intentionally does not include real payment integration.<br>• Do not enter real credentials or financial data while experimenting.</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="shop-header">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="display:flex;flex-direction:column">
+            <div style="font-weight:800;font-size:20px">BattleCoins Shop</div>
+            <div class="muted">Select an amount and simulate a top-up</div>
+          </div>
+
+          <div class="search" role="search" aria-label="Search packs">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.8"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input id="filter" placeholder="Filter packs (e.g., smallest, popular)" oninput="filterCards()" />
+          </div>
+        </div>
+
+        <div class="balance">
+          <div class="coin">BC</div>
+          <div>
+            <div style="font-size:13px;color:var(--muted)">Demo Balance</div>
+            <div style="font-weight:800">1200 BC</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid" id="packs">
+        <!-- cards inserted by JS -->
+      </div>
+
+      <div class="note">Note: This is a UI simulation. The "Purchase" actions below open a simulated confirmation. No real payments or external logins occur.</div>
+    </div>
+  </div>
+
+  <div class="panel" style="max-width:1100px;margin:0 auto;border-radius:12px;margin-top:18px;padding:14px">
+    <div style="display:flex;gap:12px;align-items:center">
+      <svg width="42" height="42" viewBox="0 0 24 24" style="flex-shrink:0"><defs></defs><rect x="1.5" y="2.5" width="21" height="19" rx="3" fill="#0b1424" stroke="rgba(255,255,255,0.04)"/><path d="M7 8h10M7 12h6" stroke="#98a0b3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <div style="font-weight:800">Why this is a safe demo</div>
+        <div class="muted">Everything here is client-side. No external payment or auth providers are used. Images are simple SVGs and gradients (no copyrighted game assets).</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <div>© Demo — UI Prototype. Not affiliated with any game company.</div>
+      <div class="muted">Built for testing and education</div>
+    </div>
+  </footer>
+
+  <!-- modal -->
+  <div class="modal-back" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle">
+      <h2 id="modaltitle">Demo Action</h2>
+      <p id="modaltext">This is a demo. No real login or payment will be performed. Use this interface to prototype and test UI flows safely.</p>
+      <div class="actions">
+        <button class="btn-close" onclick="closeModal()">Close</button>
+        <button class="btn-ok" onclick="modalOk()">OK</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  // Demo packs (fictional). Kept low prices to simulate "lowest price".
+  const packs = [
+    {id:1, coins:60, price:0.49, tag:'small', desc:'Starter pack — very small'},
+    {id:2, coins:180, price:1.49, tag:'small', desc:'Budget pack'},
+    {id:3, coins:400, price:2.99, tag:'value', desc:'Good value for new players'},
+    {id:4, coins:800, price:4.99, tag:'best', desc:'Popular choice — demo best seller'},
+    {id:5, coins:2000, price:9.99, tag:'mega', desc:'Big pack (demo)'},
+  ];
+
+  const packsEl = document.getElementById('packs');
+
+  function money(n){
+    return '$' + Number(n).toFixed(2);
+  }
+
+  function createCard(p){
+    const div = document.createElement('div');
+    div.className='card';
+    div.dataset.tag = p.tag;
+    div.innerHTML = `
+      <div class="top">
+        <div>
+          <div class="amount">${p.coins} <span class="uc">BC</span></div>
+          <div class="muted" style="margin-top:6px">${p.desc}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="price">${money(p.price)}</div>
+          <div class="muted" style="font-size:12px">Lowest demo price</div>
+        </div>
+      </div>
+      <button class="buy" onclick="simulateBuy(${p.id})">Simulate Purchase</button>
+    `;
+    return div;
+  }
+
+  // render
+  function render(){
+    packsEl.innerHTML='';
+    packs.forEach(p => packsEl.appendChild(createCard(p)));
+  }
+
+  // expose simulateBuy globally so inline onclick works
+  window.simulateBuy = function(id){
+    const p = packs.find(x=>x.id===id);
+    openModal('purchase', `Simulate purchase: ${p.coins} BC for ${money(p.price)}. This is a demo — no real payment will be taken.`);
+  }
+
+  // filter
+  window.filterCards = function(){
+    const q = document.getElementById('filter').value.trim().toLowerCase();
+    document.querySelectorAll('.grid .card').forEach(card=>{
+      const txt = card.textContent.toLowerCase();
+      card.style.display = txt.includes(q) ? '' : 'none';
+    });
+  }
+
+  // modal handling
+  const modal = document.getElementById('modal');
+  window.openModal = function(type, text){
+    const title = { 'demo-login':'Demo Login', 'purchase':'Purchase Simulation' }[type] || 'Demo Action';
+    document.getElementById('modaltitle').textContent = title;
+    document.getElementById('modaltext').textContent = text || 'This is a demo. No real login or payment will be performed.';
+    modal.style.display='flex';
+  }
+  window.closeModal = function(){ modal.style.display='none'; }
+  window.modalOk = function(){ modal.style.display='none'; alert('Action completed (demo). No real transaction occurred.'); }
+
+  // init
+  render();
+
+  // accessibility: close on escape
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeModal();
+  });
+
+})();
+</script>
+</body>
+</html>
