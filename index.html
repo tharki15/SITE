@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Identity Terminal</title>
+
+<!-- Google futuristic font -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* === Background Animation === */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    color: #00fff7;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #02010a, #000);
+  }
+
+  /* Animated moving background lines */
+  body::before, body::after {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0, 255, 255, 0.05) 0 2px,
+      transparent 2px 20px
+    );
+    animation: moveLines 10s linear infinite;
+  }
+
+  @keyframes moveLines {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(20px, 20px); }
+  }
+
+  .container {
+    text-align: center;
+    z-index: 2;
+    width: 90%;
+    max-width: 420px;
+  }
+
+  h2 {
+    color: #00fff7;
+    text-shadow: 0 0 15px #00fff7;
+    font-size: 1.5rem;
+  }
+
+  input {
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid #00fff7;
+    border-radius: 10px;
+    color: #00fff7;
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 12px;
+    width: 100%;
+    outline: none;
+    margin-top: 25px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(0,255,255,0.2);
+  }
+
+  input:focus {
+    box-shadow: 0 0 25px rgba(0,255,255,0.8);
+  }
+
+  .loader {
+    border: 3px solid rgba(0, 255, 255, 0.3);
+    border-top: 3px solid #00fff7;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    margin: 25px auto;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .message {
+    font-size: 1.1rem;
+    margin-top: 25px;
+    min-height: 40px;
+    text-shadow: 0 0 10px #00fff7;
+    animation: flicker 1.5s infinite alternate;
+  }
+
+  @keyframes flicker {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2 id="title">🤖 Initializing AI Identity Terminal...</h2>
+  <input type="text" id="input-field" placeholder="Enter your Name" autofocus>
+  <div class="loader hidden" id="loader"></div>
+  <div class="message" id="message"></div>
+</div>
+
+<!-- Final success sound -->
+<audio id="finalSound" src="sound.mp3"></audio>
+
+<script>
+  const questions = [
+    "Enter your Name",
+    "Enter your Surname",
+    "Enter your Caste Category",
+    "Enter your Gotra",
+    "Enter your Father Name",
+    "Enter your Mobile Number",
+    "Enter your Date of Birth (YYYY-MM-DD)"
+  ];
+
+  const aiQuotes = [
+    "Connecting to neural grid for optimal accuracy...",
+    "Calibrating biosignature sensors...",
+    "Scanning ancestral data...",
+    "Synchronizing neural pathways...",
+    "Analyzing quantum input sequences...",
+    "Finalizing transmission layer protocols..."
+  ];
+
+  const inputField = document.getElementById("input-field");
+  const loader = document.getElementById("loader");
+  const message = document.getElementById("message");
+  const title = document.getElementById("title");
+  const finalSound = document.getElementById("finalSound");
+
+  let step = 0;
+  let userData = {};
+
+  // Female voice output using Web Speech API
+  function speak(text) {
+    const synth = window.speechSynthesis;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1.2;
+    utter.volume = 1;
+    // choose a female voice
+    const voices = synth.getVoices();
+    const femaleVoice = voices.find(v => /female/i.test(v.name) || /woman/i.test(v.name)) || voices[0];
+    if (femaleVoice) utter.voice = femaleVoice;
+    synth.cancel(); // stop previous
+    synth.speak(utter);
+  }
+
+  // Wait for voices to load
+  window.speechSynthesis.onvoiceschanged = () => speak("Welcome to the AI Identity Terminal. Please begin by entering your name.");
+
+  inputField.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && inputField.value.trim() !== "") {
+      const value = inputField.value.trim();
+      const field = questions[step].replace("Enter your ", "").split(" ")[0].toLowerCase();
+      userData[field] = value;
+
+      inputField.classList.add("hidden");
+      loader.classList.remove("hidden");
+      const randomQuote = aiQuotes[Math.floor(Math.random() * aiQuotes.length)];
+      message.innerText = randomQuote;
+      speak(randomQuote);
+
+      setTimeout(() => {
+        loader.classList.add("hidden");
+        step++;
+
+        if (step < questions.length) {
+          inputField.classList.remove("hidden");
+          inputField.value = "";
+          inputField.placeholder = questions[step];
+          message.innerText = "";
+          speak(questions[step]);
+        } else {
+          finishSequence();
+        }
+      }, 2200);
+    }
+  });
+
+  function finishSequence() {
+    title.innerText = "✅ Data Transmission Complete";
+    message.innerHTML = "Finalizing AI handshake...";
+    speak("All data received successfully. Finalizing AI handshake.");
+
+    setTimeout(() => {
+      finalSound.play();
+      message.innerHTML = `
+        <br>🎉 Welcome <b>${userData.name}</b>!<br>
+        Your data has been securely processed.<br>
+        AI verification successful.
+      `;
+      speak(`Welcome ${userData.name}. Your data has been securely processed. AI verification successful.`);
+      inputField.remove();
+      loader.remove();
+    }, 2500);
+  }
+</script>
+
+</body>
+</html>
