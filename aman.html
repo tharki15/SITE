@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Aman’s Secret Love Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Optional Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #ff9a9e 0, #fecfef 30%, #f6d5f7 55%, #a18cd1 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Floating hearts in background (3D-ish feel) */
+    .heart {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.8);
+      transform: rotate(45deg);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+      border-radius: 2px;
+      animation: floatUp 12s linear infinite;
+      opacity: 0.75;
+      z-index: 0;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -9px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -9px;
+      top: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) rotate(45deg) translateZ(0);
+      }
+      100% {
+        transform: translateY(-120vh) rotate(45deg) translateZ(250px);
+      }
+    }
+
+    /* Position different hearts */
+    .heart:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+    .heart:nth-child(2) { left: 25%; animation-duration: 18s; animation-delay: 1s; }
+    .heart:nth-child(3) { left: 40%; animation-duration: 14s; animation-delay: 3s; }
+    .heart:nth-child(4) { left: 60%; animation-duration: 20s; animation-delay: 2s; }
+    .heart:nth-child(5) { left: 75%; animation-duration: 16s; animation-delay: 4s; }
+    .heart:nth-child(6) { left: 90%; animation-duration: 19s; animation-delay: 5s; }
+
+    /* Main 3D card */
+    .card-wrapper {
+      position: relative;
+      z-index: 2;
+      perspective: 1200px;
+      width: 100%;
+      max-width: 420px;
+      padding: 16px;
+    }
+
+    .card {
+      background: rgba(15, 14, 43, 0.8);
+      border-radius: 24px;
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.35),
+        0 0 35px rgba(255, 255, 255, 0.18);
+      padding: 24px 22px 26px;
+      text-align: center;
+      transform-style: preserve-3d;
+      transform: rotateY(-8deg) rotateX(6deg);
+      animation: gentleFloat 8s ease-in-out infinite alternate;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(14px);
+    }
+
+    @keyframes gentleFloat {
+      0% { transform: rotateY(-9deg) rotateX(5deg) translateY(0); }
+      100% { transform: rotateY(6deg) rotateX(2deg) translateY(-10px); }
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+    }
+
+    h1 span {
+      color: #ffb6e6;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 14px;
+    }
+
+    .typewriter {
+      min-height: 64px;
+      font-size: 1rem;
+      line-height: 1.4;
+      margin: 10px 0 16px;
+      white-space: pre-wrap;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 9px;
+      background: #ffb6e6;
+      animation: blink 0.8s infinite;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .section {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .section.show {
+      display: block;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fecfef);
+      transition: width 0.25s ease-out;
+    }
+
+    .progress-text {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .btn {
+      margin-top: 12px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ff758c, #ff7eb3);
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(255, 120, 170, 0.35);
+      transform: translateZ(40px);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateZ(50px) translateY(-1px) scale(1.02);
+      box-shadow: 0 14px 30px rgba(255, 120, 170, 0.45);
+      filter: brightness(1.06);
+    }
+
+    .note {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      opacity: 0.75;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 18px;
+      margin-top: 10px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    canvas {
+      width: 100%;
+      border-radius: 20px;
+      margin-top: 10px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
+    }
+
+    .reveal-text-main {
+      margin-top: 14px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffefff;
+    }
+
+    .reveal-text-sub {
+      margin-top: 5px;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .highlight-name {
+      color: #ffb6e6;
+      font-weight: 700;
+    }
+
+    .small-error {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 22px 18px 22px;
+      }
+      h1 {
+        font-size: 1.45rem;
+      }
+      .reveal-text-main {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating background hearts -->
+  <div class="heart"></div>
+  <div class="heart"></div>
+  <div class="heart"></div>
+  <div class="heart"></div>
+  <div class="heart"></div>
+  <div class="heart"></div>
+
+  <div class="card-wrapper">
+    <div class="card">
+      <h1>
+        Hi <span>Beautiful</span> 💖
+      </h1>
+      <div class="subtitle">
+        Aman ne ek chhota sa secret page sirf tumhare liye banaya hai…
+      </div>
+
+      <!-- Typewriter message area -->
+      <div class="typewriter" id="typewriter"></div>
+      <span class="cursor" id="cursor"></span>
+
+      <!-- Fake loading section -->
+      <div class="section" id="loading-section">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-text" id="progress-text">
+          0% • Trying to load the picture of the person whom AMAN loves…
+        </div>
+      </div>
+
+      <!-- Camera permission request -->
+      <div class="section" id="camera-request-section">
+        <p style="font-size:0.95rem; margin-top:4px;">
+          Ab lagta hai system ko ek clue mil gaya hai… 🕵️‍♂️💫<br><br>
+          <strong>Hint:</strong> Jis insaan se Aman sabse zyada pyaar karta hai,
+          uska chehra shayad tumhare saamne hi hai… 👀
+        </p>
+        <button class="btn" id="start-camera-btn">
+          Allow camera to reveal
+        </button>
+        <div class="note">
+          Your browser will ask for <strong>camera permission</strong>.<br>
+          Ye sirf isi page par use hoga, kahi upload / save nahi hoga. 🌸
+        </div>
+      </div>
+
+      <!-- Live camera section -->
+      <div class="section" id="camera-section">
+        <p style="font-size:0.95rem;">
+          Thoda sa muskurana… thoda sa paas aana…<br>
+          Jab tum ready ho, niche click karna. 💕
+        </p>
+        <video id="video" autoplay playsinline></video>
+        <button class="btn" id="capture-btn">
+          I'm ready ✨
+        </button>
+        <div class="note">
+          Tip: Screen ko seedha rakho aur apna chehra center me rakho.
+        </div>
+      </div>
+
+      <!-- If camera not allowed -->
+      <div class="section" id="camera-error-section">
+        <p class="small-error">
+          Agar tum camera permission nahi dena chahti ho, woh bhi bilkul theek hai. 💗
+        </p>
+        <p class="small-error" style="margin-top:6px;">
+          Bas yaad rakhna: jisko Aman sabse zyada pyaar karta hai…
+          <strong>woh tum hi ho.</strong> 💞
+        </p>
+      </div>
+
+      <!-- Final reveal section -->
+      <div class="section" id="reveal-section">
+        <canvas id="snapshot"></canvas>
+        <div class="reveal-text-main">
+          The person Aman loves the most is…
+        </div>
+        <div class="reveal-text-sub">
+          <span class="highlight-name">YOU.</span><br>
+          Haan, tum hi. Jisne yeh page open kiya hai.<br>
+          Dil se, sirf tum. ❤️
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Typewriter effect ----------
+    const typewriterEl = document.getElementById("typewriter");
+    const cursorEl = document.getElementById("cursor");
+
+    const messages = [
+      "Kabhi kabhi kisi ek insaan ki yaad,\npoori duniya se zyada loud ho jaati hai…",
+      "Aaj Aman tumhe ek aise insaan se milwana chahta hai,\njo uske dil ke bohot kareeb hai…",
+      "Trying to load the picture of the person whom AMAN loves…"
+    ];
+
+    let msgIndex = 0;
+    let charIndex = 0;
+
+    function typeNextChar() {
+      if (msgIndex >= messages.length) {
+        // Finish typing, then move to fake loading
+        setTimeout(startFakeLoading, 800);
+        cursorEl.style.display = "none";
+        return;
+      }
+
+      const currentMessage = messages[msgIndex];
+
+      if (charIndex <= currentMessage.length) {
+        typewriterEl.textContent = currentMessage.slice(0, charIndex);
+        charIndex++;
+        setTimeout(typeNextChar, 35);
+      } else {
+        // Completed one message
+        msgIndex++;
+        charIndex = 0;
+        setTimeout(typeNextChar, 900);
+        if (msgIndex === messages.length - 1) {
+          cursorEl.style.display = "inline-block";
+        }
+      }
+    }
+
+    // ---------- Fake loading ----------
+    const loadingSection = document.getElementById("loading-section");
+    const progressFill = document.getElementById("progress-fill");
+    const progressText = document.getElementById("progress-text");
+
+    function startFakeLoading() {
+      loadingSection.classList.add("show");
+      let progress = 0;
+
+      const interval = setInterval(() => {
+        const bump = Math.random() * 18 + 5; // random jump
+        progress = Math.min(100, progress + bump);
+
+        progressFill.style.width = progress + "%";
+        progressText.textContent =
+          Math.round(progress) +
+          "% • Trying to load the picture of the person whom AMAN loves…";
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            loadingSection.classList.remove("show");
+            showCameraRequest();
+          }, 700);
+        }
+      }, 320);
+    }
+
+    // ---------- Camera handling ----------
+    const cameraRequestSection = document.getElementById("camera-request-section");
+    const cameraSection = document.getElementById("camera-section");
+    const cameraErrorSection = document.getElementById("camera-error-section");
+    const startCameraBtn = document.getElementById("start-camera-btn");
+    const captureBtn = document.getElementById("capture-btn");
+    const video = document.getElementById("video");
+    const revealSection = document.getElementById("reveal-section");
+    const canvas = document.getElementById("snapshot");
+
+    let videoStream = null;
+
+    function showCameraRequest() {
+      cameraRequestSection.classList.add("show");
+      cursorEl.style.display = "none";
+      typewriterEl.textContent =
+        "System ko identity mil gayi hai…\nLekin usse confirm karne ke liye thodi si tumhari help chahiye. 😉";
+    }
+
+    async function startCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        cameraErrorSection.classList.add("show");
+        return;
+      }
+
+      try {
+        videoStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" }
+        });
+
+        video.srcObject = videoStream;
+        await video.play();
+
+        cameraRequestSection.classList.remove("show");
+        cameraSection.classList.add("show");
+      } catch (err) {
+        console.error("Camera error:", err);
+        cameraErrorSection.classList.add("show");
+      }
+    }
+
+    function capturePhotoAndReveal() {
+      if (!videoStream) {
+        cameraErrorSection.classList.add("show");
+        return;
+      }
+
+      const context = canvas.getContext("2d");
+
+      const width = video.videoWidth || 640;
+      const height = video.videoHeight || 480;
+
+      canvas.width = width;
+      canvas.height = height;
+
+      context.drawImage(video, 0, 0, width, height);
+
+      // Stop all camera tracks
+      videoStream.getTracks().forEach(track => track.stop());
+      videoStream = null;
+
+      cameraSection.classList.remove("show");
+      revealSection.classList.add("show");
+    }
+
+    // Event listeners
+    startCameraBtn.addEventListener("click", startCamera);
+    captureBtn.addEventListener("click", capturePhotoAndReveal);
+
+    // Start typing on load
+    window.addEventListener("load", () => {
+      typeNextChar();
+    });
+  </script>
+</body>
+</html>
